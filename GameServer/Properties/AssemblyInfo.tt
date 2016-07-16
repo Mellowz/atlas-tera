@@ -1,0 +1,62 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Windows.Forms" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#
+    int incRevision = 1;
+    int incBuild = 1;
+
+    try { incRevision = Convert.ToInt32(this.Host.ResolveParameterValue("","","Debug")); } catch( Exception ) { incBuild=0; }
+    try { incBuild = Convert.ToInt32(this.Host.ResolveParameterValue("","","Release")); } catch( Exception ) { incRevision=0; }
+    try {
+        string currentDirectory = Path.GetDirectoryName(Host.TemplateFile);
+        string assemblyInfo = File.ReadAllText(Path.Combine(currentDirectory,"AssemblyInfo.cs"));
+        Regex pattern = new Regex("AssemblyVersion\\(\"\\d+\\.\\d+\\.(?<revision>\\d+)\\.(?<build>\\d+)\"\\)");
+        MatchCollection matches = pattern.Matches(assemblyInfo);
+        revision = Convert.ToInt32(matches[0].Groups["revision"].Value) + incRevision;
+        build = Convert.ToInt32(matches[0].Groups["build"].Value) + incBuild;
+    }
+    catch( Exception ) { }
+#>
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("GameServer")]
+[assembly: AssemblyDescription("Atlas Tera Emulator")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("GameServer")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("db9deb3a-cdbd-47e1-aae9-2dd309ce946a")]
+
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.4503.<#= this.revision #>.<#= this.build #>")]
+[assembly: AssemblyFileVersion("1.4503.<#= this.revision #>.<#= this.build #>")]
+
+<#+
+    int revision = 0;
+    int build = 0;
+#>
