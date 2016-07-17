@@ -16,9 +16,9 @@ namespace GameServer.Network.Send
             CheckOk = checkOk;
         }
 
-        public override void Write(BinaryWriter writer)
+        public override void Write()
         {
-            WriteC(writer, (byte)(CheckOk ? 1 : 0));
+            WriteC((byte)(CheckOk ? 1 : 0));
         }
     }
 }

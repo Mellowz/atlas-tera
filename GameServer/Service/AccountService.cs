@@ -1,5 +1,7 @@
 ﻿using GameServer.Model.Account;
 using GameServer.Network;
+using GameServer.Network.Send;
+using GameServer.Utility;
 using GameServer.Utility.Helpers;
 using NHibernate;
 using NHibernate.Criterion;
@@ -43,14 +45,21 @@ namespace GameServer.Service
                 var account = session
                     .CreateCriteria(typeof(Account))
                     .Add(Restrictions.Eq("Name", AccountName))
+                    .Add(Restrictions.Eq("Token", Token))
                     .UniqueResult<Account>();
 
-                if(account != null)
+                if(account.IsExists())
                 {
-                    Logger.Debug($"Name: {account.Name}");
-                    Logger.Debug($"Password: {account.Password}");
-                    Logger.Debug($"AccountLevel: {account.AccountLevel}");
-                    Logger.Debug($"Token: {account.Token}");
+                    connection.Account = account;
+
+
+                    new S_LOADING_SCREEN_CONTROL_INFO().Send(connection);
+                    new S_REMAIN_PLAY_TIME().Send(connection);
+                    new S_LOGIN_ARBITER().Send(connection);
+                    new S_LOGIN_ACCOUNT_INFO().Send(connection);
+                    //new S_LOAD_CLIENT_ACCOUNT_SETTING().Send(connection);
+
+                    //connection.PushPacket("1900D795000000000000000000000600000000000000000000".ToBytes());
                 }
                 else
                 {

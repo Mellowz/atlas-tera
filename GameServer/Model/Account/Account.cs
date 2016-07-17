@@ -26,6 +26,11 @@
         public virtual AccountLevel AccountLevel { get; set; }
 
         /// <summary>
+        /// Account Remaining Play Time
+        /// </summary>
+        public virtual int RemainingPlayTime { get; set; }
+
+        /// <summary>
         /// Account Token
         /// </summary>
         public virtual string Token { get; set; }
