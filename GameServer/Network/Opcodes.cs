@@ -18,12 +18,7 @@ namespace GameServer.Network
             Recv.Add(unchecked((short) 0x99D4), typeof(C_LOGIN_ARBITER)); //4503 EU
 
 
-            Send.Add(typeof(S_CHECK_VERSION), unchecked((short) 0x4DBD)); //all revs
-            Send.Add(typeof(S_LOGIN_ARBITER), unchecked((short) 0x95D7)); //4503 EU
-            Send.Add(typeof(S_LOADING_SCREEN_CONTROL_INFO), unchecked((short) 0x9685)); //4503 EU
-            Send.Add(typeof(S_REMAIN_PLAY_TIME), unchecked((short) 0xF26A)); //4503 EU
-            Send.Add(typeof(S_LOGIN_ACCOUNT_INFO), unchecked((short) 0xE09D)); //4503 EU   
-            Send.Add(typeof(S_LOAD_CLIENT_ACCOUNT_SETTING), unchecked((short) 0xA967)); //4503 EU    
+            Send.Add(typeof(S_CHECK_VERSION), unchecked((short)0x4DBD)); //all revs
         }
     }
 }

@@ -87,11 +87,6 @@
     <Compile Include="Network\Recv\C_CHECK_VERSION.cs" />
     <Compile Include="Network\Recv\C_LOGIN_ARBITER.cs" />
     <Compile Include="Network\Send\S_CHECK_VERSION.cs" />
-    <Compile Include="Network\Send\S_LOADING_SCREEN_CONTROL_INFO.cs" />
-    <Compile Include="Network\Send\S_LOAD_CLIENT_ACCOUNT_SETTING.cs" />
-    <Compile Include="Network\Send\S_LOGIN_ACCOUNT_INFO.cs" />
-    <Compile Include="Network\Send\S_LOGIN_ARBITER.cs" />
-    <Compile Include="Network\Send\S_REMAIN_PLAY_TIME.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\AccountService.cs" />
     <Compile Include="Service\Commands\CommandAttribute.cs" />
@@ -104,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TERA.ico" />
+    <None Include="App.config" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -223,16 +223,6 @@ namespace GameServer.Network
         /// </summary>
         protected object WriteLock = new object();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        internal Connection Connection;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private BinaryWriter writer;
-
         /*public void Send(Player player)
         {
             Send(player.Connection);
@@ -263,11 +253,9 @@ namespace GameServer.Network
             if (state == null)
                 return;
 
-            Connection = state;
-
             if (!Opcodes.Send.ContainsKey(GetType()))
             {
-                Logger.Warn($"UNKNOWN packet opcode: {GetType().Name}");
+                Logger.Warn("UNKNOWN packet opcode: {0}", GetType().Name);
                 return;
             }
 
@@ -280,100 +268,62 @@ namespace GameServer.Network
                     {
                         using (MemoryStream stream = new MemoryStream())
                         {
-                            writer = new BinaryWriter(stream, new UTF8Encoding());
-                            WriteH(0); //Reserved for length
-                            WriteH(Opcodes.Send[GetType()]);
-                            Write();
-                            
+                            using (BinaryWriter writer = new BinaryWriter(stream, new UTF8Encoding()))
+                            {
+                                WriteH(writer, 0); //Reserved for length
+                                WriteH(writer, Opcodes.Send[GetType()]);
+                                Write(writer);
+                            }
+
                             Data = stream.ToArray();
                             BitConverter.GetBytes((short)Data.Length).CopyTo(Data, 0);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.Warn($"Can't write packet: {GetType().Name}");
+                        Logger.Warn("Can't write packet: {0}", GetType().Name);
                         Logger.Warn(ex, "ASendPacket");
                         return;
                     }
                 }
             }
 
-            Logger.Debug($"PushPacket {GetType().Name}\r\n{Data.FormatHex()}");
-            state.PushPacket(Data);
+            state.Send(Data);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        public abstract void Write();
+        public abstract void Write(BinaryWriter writer);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="val"></param>
-        protected void WriteD(int val)
+        protected void WriteD(BinaryWriter writer, int val)
         {
             writer.Write(val);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="val"></param>
-        protected void WriteH(short val)
+        protected void WriteH(BinaryWriter writer, short val)
         {
             writer.Write(val);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="val"></param>
-        protected void WriteC(byte val)
+        protected void WriteC(BinaryWriter writer, byte val)
         {
             writer.Write(val);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="val"></param>
-        protected void WriteDf(double val)
+        protected void WriteDf(BinaryWriter writer, double val)
         {
             writer.Write(val);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="val"></param>
-        protected void WriteF(float val)
+        protected void WriteF(BinaryWriter writer, float val)
         {
             writer.Write(val);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="val"></param>
-        protected void WriteQ(long val)
+        protected void WriteQ(BinaryWriter writer, long val)
         {
             writer.Write(val);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="text"></param>
-        protected void WriteS(String text)
+        protected void WriteS(BinaryWriter writer, String text)
         {
             if (text == null)
             {
@@ -387,22 +337,12 @@ namespace GameServer.Network
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="hex"></param>
-        protected void WriteB(string hex)
+        protected void WriteB(BinaryWriter writer, string hex)
         {
             writer.Write(hex.ToBytes());
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="data"></param>
-        protected void WriteB(byte[] data)
+        protected void WriteB(BinaryWriter writer, byte[] data)
         {
             writer.Write(data);
         }

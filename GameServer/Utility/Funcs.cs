@@ -162,15 +162,5 @@ namespace GameServer.Utility
 
             return new Random().Next(0, 100) <= chance;
         }
-
-        /// <summary>
-        /// Check object is Exsist
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static bool IsExists(this object obj)
-        {
-            return (obj != null);
-        }
     }
 }

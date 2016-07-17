@@ -18,8 +18,8 @@ namespace GameServer.Network.Recv
             ReadH();
             ReadH();
             ReadH();
-            ReadD();
             ClientRevision = ReadD();
+            ReadD();
             ReadD();
             ReadD();
             ReadD();
