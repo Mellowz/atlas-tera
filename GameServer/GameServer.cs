@@ -48,6 +48,9 @@ namespace GameServer
             PrintLicense(); // print license text.
             Console.ResetColor(); // reset color back to default.
 
+            Console.WriteLine();
+            Console.WriteLine("-----------------------------------------------------------");
+
             Logger.Info("GameServer v{0} warming-up..", Assembly.GetExecutingAssembly().GetName().Version);
             Logger.Info("Required client Revision: {0}.", VersionInfo.Tera.RequiredClientRevision);
 
@@ -75,11 +78,19 @@ namespace GameServer
         /// </summary>
         private static void StartupServers()
         {
+            Stopwatch sw = Stopwatch.StartNew();
             Opcodes.Init();
+            Connection.SendAllThread.Start();
             // todo load data
 
             GameServerThread = new Thread(netListener.Run) { IsBackground = true, CurrentCulture = CultureInfo.InvariantCulture };
             GameServerThread.Start();
+
+            sw.Stop();
+            Thread.Sleep(500);
+            Console.WriteLine("-----------------------------------------------------------");
+            Console.WriteLine("               Server start in {0}", (sw.ElapsedMilliseconds / 1000.0).ToString("0.00s"));
+            Console.WriteLine("-----------------------------------------------------------");
         }
 
         /// <summary>

@@ -51,12 +51,48 @@ namespace GameServer.Network
         /// <summary>
         /// 
         /// </summary>
+        protected List<byte[]> SendData = new List<byte[]>();
+        protected int SendDataSize;
+        protected object SendLock = new object();
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Account Account;
 
         /// <summary>
         /// Crypto session
         /// </summary>
         public Session Session;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static Thread SendAllThread = new Thread(SendAll);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected static void SendAll()
+        {
+            while (true)
+            {
+                for (int i = 0; i < Connections.Count; i++)
+                {
+                    try
+                    {
+                        if (!Connections[i].Send())
+                            Connections.RemoveAt(i--);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
+                    }
+                }
+
+                Thread.Sleep(10);
+            }
+        }
 
         /// <summary>
         /// 
@@ -81,7 +117,7 @@ namespace GameServer.Network
         /// </summary>
         private void InitKey()
         {
-            Send(new byte[] { 1, 0, 0, 0 });
+            PushPacket(new byte[] { 1, 0, 0, 0 });
         }
 
         /// <summary>
@@ -119,7 +155,7 @@ namespace GameServer.Network
                 if (State == 0)
                 {
                     Buffer.BlockCopy(m_Buffer, 0, Session.ClientKey1, 0, 128);
-                    Send(Session.ServerKey1);
+                    PushPacket(Session.ServerKey1);
                     State++;
                     new Thread(new ThreadStart(ReadMessage)).Start();
                     return;
@@ -128,7 +164,7 @@ namespace GameServer.Network
                 if (State == 1)
                 {
                     Buffer.BlockCopy(m_Buffer, 0, Session.ClientKey2, 0, 128);
-                    Send(Session.ServerKey2);
+                    PushPacket(Session.ServerKey2);
                     Session.Init();
                     State++;
                     new Thread(new ThreadStart(ReadMessage)).Start();
@@ -138,6 +174,8 @@ namespace GameServer.Network
                 byte[] data = new byte[length];
                 Buffer.BlockCopy(m_Buffer, 0, data, 0, length);
                 Session.Decrypt(ref data);
+
+                Logger.Debug($"data:\r\n{data.FormatHex()}");
 
                 using (MemoryStream stream = new MemoryStream(data))
                 using (BinaryReader reader = new BinaryReader(stream))
@@ -151,14 +189,14 @@ namespace GameServer.Network
                         HandlePacket(packet);
                     }
                 }
+
+                new Thread(new ThreadStart(ReadMessage)).Start();
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, "{0} was closed by force", m_Address);
-                //close();
+                Close();
             }
-
-            new Thread(new ThreadStart(ReadMessage)).Start();
         }
 
         /// <summary>
@@ -186,19 +224,60 @@ namespace GameServer.Network
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="data"></param>
+        public void PushPacket(byte[] data)
+        {
+            //Already closed
+            if (SendLock == null)
+                return;
+
+            lock (SendLock)
+            {
+                SendData.Add(data);
+                SendDataSize += data.Length;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="buff"></param>
-        public void Send(byte[] buff)
+        private bool Send()
         {
             try
             {
-                //Logger.Debug("Send: {0}", buff.FormatHex());
-                m_Stream.BeginWrite(buff, 0, buff.Length, new AsyncCallback(EndSendCallBackStatic), m_Stream);
+                byte[] Data = new byte[0];
+
+                if (SendLock == null)
+                    return false;
+
+                lock (SendLock)
+                {
+                    if (SendData.Count == 0)
+                        return true;
+
+                    Data = new byte[SendDataSize];
+
+                    int pointer = 0;
+                    for (int i = 0; i < SendData.Count; i++)
+                    {
+                        Array.Copy(SendData[i], 0, Data, pointer, SendData[i].Length);
+                        pointer += SendData[i].Length;
+                    }
+
+                    SendData.Clear();
+                    SendDataSize = 0;
+                }
+
+                m_Stream.BeginWrite(Data, 0, Data.Length, new AsyncCallback(EndSendCallBackStatic), m_Stream);
             }
             catch (Exception ex)
             {
                 Logger.Warn(ex, "Send");
-                return;
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>

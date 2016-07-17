@@ -2,8 +2,14 @@
 
 namespace GameServer.Model.Mappings.Accounts
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AccountMap : ClassMap<Account.Account>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public AccountMap()
         {
             Table("Accounts");
@@ -16,6 +22,7 @@ namespace GameServer.Model.Mappings.Accounts
               .Length(32)
               .Not.Nullable();
             Map(x => x.AccountLevel).CustomType<int>();
+            Map(x => x.RemainingPlayTime);
             Map(x => x.Token)
               .Length(50)
               .Nullable();
