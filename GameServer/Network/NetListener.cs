@@ -78,7 +78,14 @@ namespace GameServer.Network
             else
                 ConnectionsTime.Add(ip, Funcs.GetCurrentMilliseconds());
 
-            new Connection(tcpClient);
+            var con = new Connection(tcpClient);
+            con.Disconnected += Con_Disconnected;
+        }
+
+        private void Con_Disconnected(Connection connection)
+        {
+            Logger.Info("Connection Disconnected.");
+            connection.Dispose();
         }
 
         /// <summary>

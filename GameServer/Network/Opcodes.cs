@@ -15,7 +15,7 @@ namespace GameServer.Network
         public static void Init()
         {
             Recv.Add(unchecked((short) 0x4DBC), typeof(C_CHECK_VERSION)); //all revs
-            //Recv.Add(unchecked((short) 0x99D4), typeof(C_LOGIN_ARBITER)); //4503 EU
+            Recv.Add(unchecked((short) 0x99D4), typeof(C_LOGIN_ARBITER)); //4503 EU
 
 
             Send.Add(typeof(S_CHECK_VERSION), unchecked((short)0x4DBD)); //all revs

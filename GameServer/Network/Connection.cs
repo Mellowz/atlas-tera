@@ -3,6 +3,7 @@ using GameServer.Network.Crypt;
 using GameServer.Utility;
 using NLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -13,12 +14,17 @@ namespace GameServer.Network
     /// <summary>
     /// 
     /// </summary>
-    public class Connection
+    public class Connection : IDisposable
     {
         /// <summary>
         /// Logger for this class
         /// </summary>
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// List of Connection
+        /// </summary>
+        public static List<Connection> Connections = new List<Connection>();
 
         /// <summary>
         /// 
@@ -63,6 +69,8 @@ namespace GameServer.Network
             m_Address = tcpClient.Client.RemoteEndPoint;
 
             Session = new Session();
+
+            Connections.Add(this);
 
             new Thread(new ThreadStart(InitKey)).Start();
             new Thread(new ThreadStart(ReadMessage)).Start();
@@ -209,5 +217,29 @@ namespace GameServer.Network
                 Logger.Warn(ex, "EndSendCallBackStatic");
             }
         }
+
+        public void Close()
+        {
+            m_Client.Client.Disconnect(true);
+            m_Client.Close();
+            m_Stream.Close();
+            Disconnected(this);
+            Connections.Remove(this);
+        }
+
+        public void Dispose()
+        {
+            m_Client.Dispose();
+            m_Stream.Dispose();
+            m_Address = null;
+            m_Buffer = null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        public delegate void OnDisconnect(Connection connection);
+        public event OnDisconnect Disconnected;
     }
 }
