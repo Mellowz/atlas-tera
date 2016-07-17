@@ -51,15 +51,13 @@ namespace GameServer.Service
                 if(account.IsExists())
                 {
                     connection.Account = account;
-
+                    // todo preload players store in account
+                    // connection.Account.Players = PlayerService.LoadPlayerByAccountId(account.Id);
 
                     new S_LOADING_SCREEN_CONTROL_INFO().Send(connection);
                     new S_REMAIN_PLAY_TIME().Send(connection);
                     new S_LOGIN_ARBITER().Send(connection);
                     new S_LOGIN_ACCOUNT_INFO().Send(connection);
-                    //new S_LOAD_CLIENT_ACCOUNT_SETTING().Send(connection);
-
-                    //connection.PushPacket("1900D795000000000000000000000600000000000000000000".ToBytes());
                 }
                 else
                 {

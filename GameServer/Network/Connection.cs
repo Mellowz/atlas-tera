@@ -89,8 +89,6 @@ namespace GameServer.Network
                         Logger.Error(ex);
                     }
                 }
-
-                Thread.Sleep(10);
             }
         }
 
@@ -136,7 +134,7 @@ namespace GameServer.Network
             catch (Exception ex)
             {
                 Logger.Error(ex, "ReadMessage Exception");
-                //close();
+                Close();
             }
         }
 
@@ -174,8 +172,6 @@ namespace GameServer.Network
                 byte[] data = new byte[length];
                 Buffer.BlockCopy(m_Buffer, 0, data, 0, length);
                 Session.Decrypt(ref data);
-
-                Logger.Debug($"data:\r\n{data.FormatHex()}");
 
                 using (MemoryStream stream = new MemoryStream(data))
                 using (BinaryReader reader = new BinaryReader(stream))
@@ -268,6 +264,9 @@ namespace GameServer.Network
                     SendData.Clear();
                     SendDataSize = 0;
                 }
+
+                if(State == 2) Session.Encrypt(ref Data);
+                    
 
                 m_Stream.BeginWrite(Data, 0, Data.Length, new AsyncCallback(EndSendCallBackStatic), m_Stream);
             }
