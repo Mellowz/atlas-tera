@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using GameServer.Model.Mappings.Accounts;
 
 namespace GameServer.Model.Account
 {
@@ -8,38 +8,78 @@ namespace GameServer.Model.Account
     public class Account
     {
         /// <summary>
-        /// Account ID
+        /// 
         /// </summary>
-        public virtual int Id { get; set; }
-
-        /// <summary>
-        /// Account Name
-        /// </summary>
-        public virtual string Name { get; set; }
-
-        /// <summary>
-        /// Account Password
-        /// </summary>
-        public virtual string Password { get; set; }
-
-        /// <summary>
-        /// Account Level
-        /// </summary>
-        public virtual AccountLevel AccountLevel { get; set; }
+        private AccountDto _AccountDto;
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual int MaxPlayers { get; set; }
+        public Account(AccountDto dto)
+        {
+            _AccountDto = dto;
+        }
 
         /// <summary>
-        /// Account Remaining Play Time
+        /// 
         /// </summary>
-        public virtual int RemainingPlayTime { get; set; }
+        public int Id
+        {
+            get { return _AccountDto.Id; }
+        }
 
         /// <summary>
-        /// Account Token
+        /// 
         /// </summary>
-        public virtual string Token { get; set; }
+        public string Name
+        {
+            get { return _AccountDto.Name; }
+            set { _AccountDto.Name = value; }
+        }
+
+        /// <summary>
+        /// Account Password
+        /// Read Only
+        /// </summary>
+        public string Password
+        {
+            get { return _AccountDto.Password; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public AccountLevel AccountLevel
+        {
+            get { return _AccountDto.AccountLevel; }
+            set { _AccountDto.AccountLevel = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int MaxPlayers
+        {
+            get { return _AccountDto.MaxPlayers; }
+            set { _AccountDto.MaxPlayers = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int RemainingPlayTime
+        {
+            get { return _AccountDto.RemainingPlayTime; }
+            set { _AccountDto.RemainingPlayTime = value; }
+        }
+
+        /// <summary>
+        /// Account Token, Guid Type
+        /// Generate only login from a web server side
+        /// </summary>
+        public string Token
+        {
+            get { return _AccountDto.Token; }
+        }
     }
 }

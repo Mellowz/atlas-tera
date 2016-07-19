@@ -1,10 +1,6 @@
-﻿using GameServer.Model.Player;
+﻿using GameServer.Model.Mappings.Players;
+using GameServer.Model.Player;
 using GameServer.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameServer.Network.Recv
 {
@@ -16,7 +12,7 @@ namespace GameServer.Network.Recv
         /// <summary>
         /// 
         /// </summary>
-        protected Player Player = new Player();
+        protected PlayerDto Player = new PlayerDto();
 
         /// <summary>
         /// 

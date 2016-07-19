@@ -5,7 +5,7 @@ namespace GameServer.Model.Mappings.Accounts
     /// <summary>
     /// 
     /// </summary>
-    public class AccountMap : ClassMap<Account.Account>
+    public class AccountMap : ClassMap<AccountDto>
     {
         /// <summary>
         /// 

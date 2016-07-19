@@ -1,4 +1,7 @@
-﻿namespace GameServer.Model.Player
+﻿using GameServer.Model.Mappings.Players;
+using GameServer.Model.World;
+
+namespace GameServer.Model.Player
 {
     /// <summary>
     /// Player Character Instance
@@ -8,59 +11,109 @@
         /// <summary>
         /// 
         /// </summary>
-        public virtual int Id { get; set; }
+        private PlayerDto _PlayerDto;
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual int AccountId { get; set; }
+        private Position _Position;
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual string Name { get; set; }
+        private PlayerData _PlayerData;
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual Race Race { get; set; }
+        /// <param name="dto"></param>
+        public Player(PlayerDto dto)
+        {
+            _PlayerDto = dto;
+            _Position = new Position()
+            {
+                MapId = dto.MapId,
+                X = dto.X,
+                Y = dto.Y,
+                Z = dto.Z,
+                Heading = dto.Heading
+            };
+            _PlayerData = new PlayerData()
+            {
+                Data = dto.Data,
+                Detail = dto.Detail,
+                Detail2 = dto.Detail2
+            };
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual Gender Gender { get; set; }
+        public int Id
+        {
+            get { return _PlayerDto.Id; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual PlayerClass Class { get; set; }
+        public int AccountId
+        {
+            get { return _PlayerDto.AccountId; }
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name
+        {
+            get { return _PlayerDto.Name; }
+            set { _PlayerDto.Name = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual int MapId { get; set; }
-
-        /// <summary>
-        /// Position of Player Character
-        /// </summary>
-        public virtual float X { get; set; }
-        public virtual float Y { get; set; }
-        public virtual float Z { get; set; }
-        public virtual float Heading { get; set; }
+        public Race Race
+        {
+            get { return _PlayerDto.Race; }
+            set { _PlayerDto.Race = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual byte[] Data { get; set; }
+        public Gender Gender
+        {
+            get { return _PlayerDto.Gender; }
+            set { _PlayerDto.Gender = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual byte[] Detail { get; set; }
+        public PlayerClass Class
+        {
+            get { return _PlayerDto.Class; }
+            set { _PlayerDto.Class = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public virtual byte[] Detail2 { get; set; }
+        public Position Position
+        {
+            get { return _Position; }
+            set { _Position = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public PlayerData PlayerData
+        {
+            get { return _PlayerData; }
+            set { _PlayerData = value; }
+        }
     }
 }

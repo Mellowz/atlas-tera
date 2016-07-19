@@ -7,7 +7,7 @@ namespace GameServer.Utility.Helpers
 {
     public class NHibernateHelper
     {
-        public static ISessionFactory CreateSessionFactory()
+        public static ISessionFactory CreateMssqlSessionFactory()
         {
             return Fluently.Configure()
               .Database(

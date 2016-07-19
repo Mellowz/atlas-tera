@@ -39,7 +39,7 @@ namespace GameServer.Network.Send
                 WriteH(0); //Check2
                 WriteH(0); //Name shift
                 WriteH(0); //Details shift
-                WriteH((short)player.Detail.Length); //Details length
+                WriteH((short)player.PlayerData.Detail.Length); //Details length
 
                 WriteD(player.Id); //PlayerId
                 WriteD(player.Gender.GetHashCode()); //Gender
@@ -64,7 +64,7 @@ namespace GameServer.Network.Send
                 WriteD(0); //Item ?
                 WriteD(0); //Item ?
 
-                WriteB(player.Data);
+                WriteB(player.PlayerData.Data);
                 WriteC(0); //Offline?
                 WriteB("0000000000000000000000000089E66EB0"); //???
                 WriteB(new byte[48]);
@@ -95,7 +95,7 @@ namespace GameServer.Network.Send
                 WriteH((short)writer.BaseStream.Length); //Details shift
                 writer.Seek(0, SeekOrigin.End);
 
-                WriteB(player.Detail);
+                WriteB(player.PlayerData.Detail);
 
                 if (i != Connection.Players.Count - 1)
                 {

@@ -1,4 +1,5 @@
 ﻿using GameServer.Model.Account;
+using GameServer.Model.Mappings.Accounts;
 using GameServer.Network;
 using GameServer.Network.Send;
 using GameServer.Utility;
@@ -29,7 +30,7 @@ namespace GameServer.Service
         /// </summary>
         static AccountService()
         {
-            _SessionFactory = NHibernateHelper.CreateSessionFactory();
+            _SessionFactory = NHibernateHelper.CreateMssqlSessionFactory();
         }
 
         /// <summary>
@@ -42,17 +43,16 @@ namespace GameServer.Service
         {
             using (ISession session = _SessionFactory.OpenSession())
             {
-                var account = session
-                    .CreateCriteria(typeof(Account))
+                var accountDto = session
+                    .CreateCriteria(typeof(AccountDto))
                     .Add(Restrictions.Eq("Name", AccountName))
                     .Add(Restrictions.Eq("Token", Token))
-                    .UniqueResult<Account>();
+                    .UniqueResult<AccountDto>();
 
-                if(account.IsExists())
+                if(accountDto.IsExists())
                 {
-                    connection.Account = account;
-                    // todo preload players store in account
-                    connection.Players = PlayerService.LoadPlayerList(account);
+                    connection.Account = new Account(accountDto);
+                    connection.Players = PlayerService.LoadPlayerList(connection.Account);
 
                     new S_LOADING_SCREEN_CONTROL_INFO().Send(connection);
                     new S_REMAIN_PLAY_TIME().Send(connection);

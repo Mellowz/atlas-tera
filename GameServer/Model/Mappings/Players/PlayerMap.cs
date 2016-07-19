@@ -5,7 +5,7 @@ namespace GameServer.Model.Mappings.Players
     /// <summary>
     /// 
     /// </summary>
-    public class PlayerMap : ClassMap<Player.Player>
+    public class PlayerMap : ClassMap<PlayerDto>
     {
         /// <summary>
         /// 

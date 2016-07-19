@@ -1,4 +1,5 @@
 ﻿using GameServer.Model.Account;
+using GameServer.Model.Mappings.Players;
 using GameServer.Model.Player;
 using GameServer.Network;
 using GameServer.Network.Send;
@@ -32,7 +33,7 @@ namespace GameServer.Service
         /// </summary>
         static PlayerService()
         {
-            _SessionFactory = NHibernateHelper.CreateSessionFactory();
+            _SessionFactory = NHibernateHelper.CreateMssqlSessionFactory();
         }
 
         /// <summary>
@@ -44,12 +45,19 @@ namespace GameServer.Service
         {
             using (ISession session = _SessionFactory.OpenSession())
             {
-                var list = (List<Player>)session
-                            .QueryOver<Player>()
+                List<Player> retval = new List<Player>();
+
+                var listDto = (List<PlayerDto>)session
+                            .QueryOver<PlayerDto>()
                             .Where(x => x.AccountId == account.Id)
                             .List();
-                Logger.Trace($"Load Character ({list.Count}) from acc.ID {account.Id}");
-                return list;
+
+                Logger.Trace($"Load Character ({listDto.Count}) from Account.Name {account.Name}");
+
+                foreach(var dto in listDto)
+                    retval.Add(new Player(dto));
+
+                return retval;
             }
         }
 
@@ -99,19 +107,19 @@ namespace GameServer.Service
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="Player"></param>
-        public static void CreatePlayer(Connection connection, Player Player)
+        public static void CreatePlayer(Connection connection, PlayerDto playerDto)
         {
-            Player.AccountId = connection.Account.Id;
-            Player.MapId = 13;
-            Player.X = 93492.0F;
-            Player.Y = -88216.0F;
-            Player.Z = -4523.0F;
-            Player.Heading = unchecked((short)0x8000);
+            playerDto.AccountId = connection.Account.Id;
+            playerDto.MapId = 13;
+            playerDto.X = 93492.0F;
+            playerDto.Y = -88216.0F;
+            playerDto.Z = -4523.0F;
+            playerDto.Heading = unchecked((short)0x8000);
 
             using (var session = _SessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                session.Save(Player);
+                session.Save(playerDto);
                 tx.Commit();
                 new S_CREATE_USER(true).Send(connection);
             }

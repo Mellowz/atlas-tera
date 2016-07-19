@@ -73,12 +73,16 @@
     <Compile Include="GameServer.cs" />
     <Compile Include="Model\Account\Account.cs" />
     <Compile Include="Model\Account\AccountLevel.cs" />
+    <Compile Include="Model\Mappings\Accounts\AccountDto.cs" />
     <Compile Include="Model\Mappings\Accounts\AccountMap.cs" />
+    <Compile Include="Model\Mappings\Players\PlayerDto.cs" />
     <Compile Include="Model\Mappings\Players\PlayerMap.cs" />
     <Compile Include="Model\Player\Gender.cs" />
     <Compile Include="Model\Player\Player.cs" />
     <Compile Include="Model\Player\PlayerClass.cs" />
+    <Compile Include="Model\Player\PlayerData.cs" />
     <Compile Include="Model\Player\Race.cs" />
+    <Compile Include="Model\World\Position.cs" />
     <Compile Include="Network\APacket.cs" />
     <Compile Include="Network\Connection.cs" />
     <Compile Include="Network\Crypt\Cryptor.cs" />
