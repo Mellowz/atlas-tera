@@ -1,4 +1,5 @@
 ﻿using GameServer.Model.Account;
+using GameServer.Model.Player;
 using GameServer.Network.Crypt;
 using GameServer.Utility;
 using NLog;
@@ -64,6 +65,11 @@ namespace GameServer.Network
         /// Crypto session
         /// </summary>
         public Session Session;
+
+        /// <summary>
+        /// Account Players
+        /// </summary>
+        public List<Player> Players = new List<Player>();
 
         /// <summary>
         /// 
@@ -203,6 +209,7 @@ namespace GameServer.Network
         {
             if (Opcodes.Recv.ContainsKey(packet.Opcode))
             {
+                Logger.Trace($"RECV: {Opcodes.Recv[packet.Opcode].Name}");
                 ((ARecvPacket)Activator.CreateInstance(Opcodes.Recv[packet.Opcode])).Process(this, packet);
             }
             else
@@ -213,7 +220,7 @@ namespace GameServer.Network
                                      opCodeLittleEndianHex.Substring(0, 2),
                                      packet.Data.Length);
 
-                Logger.Debug("Data:\n{0}", packet.Data.FormatHex());
+                Logger.Debug("Data:\r\n{0}", packet.Data.FormatHex());
             }
         }
 

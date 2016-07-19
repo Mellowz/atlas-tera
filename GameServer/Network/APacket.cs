@@ -231,7 +231,7 @@ namespace GameServer.Network
         /// <summary>
         /// 
         /// </summary>
-        private BinaryWriter writer;
+        internal BinaryWriter writer;
 
         /*public void Send(Player player)
         {
@@ -298,7 +298,7 @@ namespace GameServer.Network
                 }
             }
 
-            Logger.Debug($"PushPacket {GetType().Name}\r\n{Data.FormatHex()}");
+            Logger.Trace($"SEND: {GetType().Name}\r\n{Data.FormatHex()}");
             state.PushPacket(Data);
         }
 

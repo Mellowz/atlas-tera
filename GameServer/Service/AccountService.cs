@@ -52,7 +52,7 @@ namespace GameServer.Service
                 {
                     connection.Account = account;
                     // todo preload players store in account
-                    // connection.Account.Players = PlayerService.LoadPlayerByAccountId(account.Id);
+                    connection.Players = PlayerService.LoadPlayerList(account);
 
                     new S_LOADING_SCREEN_CONTROL_INFO().Send(connection);
                     new S_REMAIN_PLAY_TIME().Send(connection);
@@ -66,5 +66,7 @@ namespace GameServer.Service
                 }
             }
         }
+
+
     }
 }

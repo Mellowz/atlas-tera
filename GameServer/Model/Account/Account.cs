@@ -1,4 +1,6 @@
-﻿namespace GameServer.Model.Account
+﻿using System.Collections.Generic;
+
+namespace GameServer.Model.Account
 {
     /// <summary>
     /// Account Model Class
@@ -24,6 +26,11 @@
         /// Account Level
         /// </summary>
         public virtual AccountLevel AccountLevel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual int MaxPlayers { get; set; }
 
         /// <summary>
         /// Account Remaining Play Time

@@ -80,6 +80,8 @@ namespace GameServer
         {
             Stopwatch sw = Stopwatch.StartNew();
             Opcodes.Init();
+            Logger.Info($"Init packet: Recv[{Opcodes.Recv.Count}], Send[{Opcodes.Send.Count}]");
+
             Connection.SendAllThread.Start();
             // todo load data
 
